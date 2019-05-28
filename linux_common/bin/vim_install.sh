@@ -12,7 +12,7 @@ cd vim-8.0.0134/
 ./configure --with-features=huge -enable-pythoninterp=yes
 make && make install
 
-cp ${CUR_DIR}
+cd ${CUR_DIR}
 cp ../etc/vimrc ~/.vimrc
 
 git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
