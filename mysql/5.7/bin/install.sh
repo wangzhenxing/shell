@@ -13,8 +13,10 @@ service mysqld start
 
 grep "A temporary password is generated" /var/log/mysqld.log
 
+rm -rf mysql57-community-release-el7-8.noarch.rpm
 
-### change pwd
+
+### change pwd (密码在/var/log/mysqld.log里面)
 # mysql -u root -p
 # SET PASSWORD = PASSWORD('your new password');
 # ALTER USER 'root'@'localhost' PASSWORD EXPIRE NEVER;
