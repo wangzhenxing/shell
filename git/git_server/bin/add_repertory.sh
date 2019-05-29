@@ -4,6 +4,8 @@
 function setRepertory()
 {
     echo ">>> begin set repertory $1"
+    mkdir /git
+    chown -R git:git /git
     mkdir -p $1
     git init --bare $1
     chown -R git:git $1
