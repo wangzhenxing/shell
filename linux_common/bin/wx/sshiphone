@@ -1,0 +1,16 @@
+#!/bin/bash
+
+#pwd alpine
+
+cd /Users/wzx/thirdparty/bin/
+
+./clear_127.0.0.1
+./kill_iproxy
+
+nohup iproxy 2222 22 > nohup.out &
+ssh -p 2222 root@127.0.0.1
+
+./clear_127.0.0.1
+./kill_iproxy
+
+cd -
