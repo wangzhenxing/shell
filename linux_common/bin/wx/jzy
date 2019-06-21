@@ -1,0 +1,5 @@
+#!/bin/bash
+
+#pwd re7EMHGZt%v%
+
+ssh -i ~/.ssh/id_rsa root@47.104.179.82 

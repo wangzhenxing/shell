@@ -1,0 +1,64 @@
+
+######## 快捷键 ##################
+{https://github.com/gpakosz/.tmux}
+
+
+## 创建新tmux
+tmux new -s myname
+
+## 重新进入tmux
+tmux a -t myname  (or at, or attach)
+
+## 退出
+Ctrl + b + Ctrl + z
+
+
+## 组合命令
+Ctrl+b +
+:new<CR> # 创建新的 Session，其中 : 是进入 Tmux 命令行的快捷键
+s        # 列出所有 Session，可通过 j, k, 回车切换
+$        # 为当前 Session 命名
+c        # 创建 Window
+<n>      # 切换到第 n 个 Window
+,        # 为当前 Window 命名
+%        # 垂直切分 Pane
+"        # 水平切分 Pane
+<space>  # 切换 Pane 布局
+d        # detach，退出 Tmux Session，回到父级 Shell
+t        # 显示一个时钟，:)
+?        # 快捷键帮助列表"
+
+[Session操作]
+# 创建一个新的session
+$ tmux new-s <name-of-my-session>
+# 在当前session中创建一个新的Session, 并保证之前session依然存在
+# C-b : 然后输入下面命令
+new-s <name-of-my-new-session>
+# 进入名为test的session
+$ tmux attach -t test
+
+[Window操作]
+C-b c 创建一个新窗口
+C-b & 关闭当前窗口
+C-b w 列出所有的窗口选择
+C-b p 切换到上一个窗口
+C-b n 切换到下一个窗口
+C-b 窗口号 使用窗口号切换窗口(例如窗口号为1的, 则C-b 1)
+C-b , 重命名当前窗口，便于识别各个窗口
+
+[Pane操作]
+C-b % 横向分Terminal
+C-b " 纵向分Terminal
+C-b 方向键 则会在自由选择各面板
+C-b x 关闭当前pane
+C-b q 显示面板编号
+C-b s 列出所有会话
+C-b d detach当前session(可以认为后台运行)"
+######## 快捷键 ##################
+
+
+【重启】
+tmux kill-server
+tmux -S xxxx
+
+
