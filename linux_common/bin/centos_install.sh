@@ -14,3 +14,16 @@ yum install -y lrzsz
 #cd screen-4.6.2
 #./configure
 #make && make install
+
+
+
+### dstat
+yum install -y dstat
+
+
+### lsof
+yum install -y lsof
+
+
+### iotop
+yum install iotop
