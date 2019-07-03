@@ -4,6 +4,10 @@ curl -LO https://storage.googleapis.com/minikube/releases/latest/docker-machine-
 
 brew install kubernetes-cli
 
+# install mac docker
+echo "please install mac docker"
+exit
+
 # install minikube
 #brew cask install minikube
 curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-darwin-amd64 && sudo install minikube-darwin-amd64 /usr/local/bin/minikube
