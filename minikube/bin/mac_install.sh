@@ -10,13 +10,14 @@ exit
 
 # install minikube
 #brew cask install minikube
-curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-darwin-amd64 && sudo install minikube-darwin-amd64 /usr/local/bin/minikube
+#curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-darwin-amd64 && sudo install minikube-darwin-amd64 /usr/local/bin/minikube
+curl -Lo minikube http://kubernetes.oss-cn-hangzhou.aliyuncs.com/minikube/releases/v1.2.0/minikube-darwin-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/
 
 # set default driver
 minikube config set vm-driver hyperkit
 
 minikube delete
-minikube start
+minikube start --registry-mirror=https://registry.docker-cn.com
 
 #minikube dashboard
 
