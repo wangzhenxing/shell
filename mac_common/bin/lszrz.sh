@@ -1,12 +1,12 @@
 #!/bin/bash
-brew install lrzs
+#brew install lrzs
 
-brew install wget
+#brew install wget
+
+cp ../etc/iterm2-send-zmodem.sh /usr/local/bin
+cp ../etc/iterm2-recv-zmodem.sh /usr/local/bin
 
 cd /usr/local/bin
-wget https://raw.github.com/mmastrac/iterm2-zmodem/master/iterm2-send-zmodem.sh
-wget https://raw.github.com/mmastrac/iterm2-zmodem/master/iterm2-recv-zmodem.sh
-
 chmod +x iterm2-send-zmodem.sh 
 chmod +x iterm2-recv-zmodem.sh
 
