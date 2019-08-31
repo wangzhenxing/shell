@@ -14,3 +14,5 @@ yum install php70w-fpm -y
 yum -y install php70w-cli php70w-common php70w-devel php70w-mysql
 
 php -v
+
+service php-fpm start
