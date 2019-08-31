@@ -10,8 +10,7 @@ rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
 #rpm -Uvh https://mirror.webtatic.com/yum/el6/latest.rpm
 
 yum install php70w -y
-yum install php70w-fpm -y
-yum -y install php70w-cli php70w-common php70w-devel php70w-mysql
+yum install php70w* --skip-broken -y
 
 php -v
 
