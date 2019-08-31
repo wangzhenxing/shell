@@ -16,6 +16,11 @@ curl -Lo minikube http://kubernetes.oss-cn-hangzhou.aliyuncs.com/minikube/releas
 # set default driver
 minikube config set vm-driver hyperkit
 
+# install helm
+brew install kubernetes-helm
+helm init --history-max 200
+helm init --upgrade -i registry.cn-hangzhou.aliyuncs.com/google_containers/tiller:v2.14.1 --stable-repo-url https://kubernetes.oss-cn-hangzhou.aliyuncs.com/charts
+
 minikube delete
 minikube start --registry-mirror=https://registry.docker-cn.com
 
