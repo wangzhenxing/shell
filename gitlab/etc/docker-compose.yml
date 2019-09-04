@@ -1,0 +1,56 @@
+version: '2'
+
+services:
+  gitlab:
+    image: 'gitlab/gitlab-ce:latest'
+    container_name: gitlab
+    restart: always
+    hostname: 'www.skipkey.com'
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'https://www.skipkey.com'
+        nginx['redirect_http_to_https'] = true
+        nginx['ssl_certificate'] = "/etc/gitlab/ssl/www.skipkey.com.pem"
+        nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/www.skipkey.com.key"
+        #nginx['ssl_dhparam'] = "/etc/gitlab/ssl/dhparam.pem"
+        registry_external_url 'https://www.skipkey.com:4567'
+        registry_nginx['ssl_certificate'] = "/etc/gitlab/ssl/www.skipkey.com.pem"
+        registry_nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/www.skipkey.com.key"
+        gitlab_rails['registry_path'] = "/var/opt/gitlab/docker-registry"
+        gitlab_rails['gitlab_default_projects_features_issues'] = true
+        gitlab_rails['gitlab_default_projects_features_merge_requests'] = true
+        gitlab_rails['gitlab_default_projects_features_wiki'] = false
+        gitlab_rails['gitlab_default_projects_features_snippets'] = false
+        gitlab_rails['gitlab_default_projects_features_builds'] = false
+        gitlab_rails['gitlab_default_projects_features_container_registry'] = false
+        gitlab_rails['gitlab_shell_ssh_port'] = 2345
+        gitlab_rails['smtp_enable'] = true
+        gitlab_rails['smtp_address'] = "smtp.exmail.qq.com"
+        gitlab_rails['smtp_port'] = 465
+        gitlab_rails['smtp_tls'] = true
+        gitlab_rails['smtp_authentication'] = "login"
+        gitlab_rails['smtp_enable_starttls_auto'] = true
+        high_availability['mountpoint'] = ["/etc/gitlab", "/var/log/gitlab", "/var/opt/gitlab"]
+    ports:
+      - '80:80'
+      - '443:443'
+      - '2345:22'
+      - '4567:4567'
+    volumes:
+      - /data/docker/gitlab/config:/etc/gitlab
+      - /data/docker/gitlab/logs:/var/log/gitlab
+      - /data/docker/gitlab/data:/var/opt/gitlab
+
+  #gitlab-runner:
+  #  image: 'gitlab/gitlab-runner:latest'
+  #  container_name: gitlab-runner
+  #  restart: always
+  #  volumes:
+  #    - /var/run/docker.sock:/var/run/docker.sock
+  #    - /data/docker/gitlab-runner/config:/etc/gitlab-runner:Z
+
+
+
+
+
+
