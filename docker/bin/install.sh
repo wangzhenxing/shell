@@ -13,8 +13,10 @@ sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/dock
 yum list docker-ce --showduplicates | sort -r
 
 # 安装
-sudo yum install docker-ce
+sudo yum install docker-ce -y
 #sudo yum install docker-ce-17.12.0.ce
+
+cp ../etc/daemon.json /etc/docker
 
 # 启动
 sudo systemctl start docker
