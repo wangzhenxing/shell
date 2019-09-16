@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 卸载旧版本
-sudo yum remove docker  docker-common docker-selinux docker-engine
+sudo yum remove docker  docker-common docker-selinux docker-engine -y
 
 # 依赖包
 sudo yum install -y yum-utils device-mapper-persistent-data lvm2
@@ -13,7 +13,7 @@ sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/dock
 yum list docker-ce --showduplicates | sort -r
 
 # 安装
-sudo yum install docker-ce
+sudo yum install docker-ce -y
 #sudo yum install docker-ce-17.12.0.ce
 
 # 启动

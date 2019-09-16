@@ -14,4 +14,7 @@ yum install php71w* --skip-broken -y
 
 php -v
 
+mv /etc/php-fpm.d/www.conf /etc/php-fpm.d/www.conf.back
+cp ../../etc/php-fpm.conf /etc/php-fpm.d/www.conf
+
 service php-fpm start
