@@ -1,0 +1,23 @@
+version: '3.1'
+
+services:
+
+  wordpress:
+    image: wordpress
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      WORDPRESS_DB_HOST: mysql
+      WORDPRESS_DB_USER: cloudsky
+      WORDPRESS_DB_PASSWORD: CloudSky123
+      WORDPRESS_DB_NAME: blog
+
+  mysql:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: blog
+      MYSQL_USER: cloudsky
+      MYSQL_PASSWORD: CloudSky123
+      MYSQL_RANDOM_ROOT_PASSWORD: 's214WE(^%^EGUFEWOfwq234)'
