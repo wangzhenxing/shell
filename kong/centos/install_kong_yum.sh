@@ -1,4 +1,7 @@
 #!/bin/bash
+set -e -x
+
+
 sudo yum update -y
 sudo yum install -y wget
 wget https://bintray.com/kong/kong-rpm/rpm -O bintray-kong-kong-rpm.repo
