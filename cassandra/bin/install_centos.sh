@@ -27,6 +27,6 @@ _addAutoStart() {
 
 
 ##### main logic #####
-#_install
+_install
 _start
 #_addAutoStart
