@@ -26,4 +26,6 @@ yum install -y lsof
 
 
 ### iotop
-yum install iotop
+yum install iotop -y
+
+yum install -y htop
