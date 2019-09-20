@@ -16,6 +16,7 @@ yum list docker-ce --showduplicates | sort -r
 sudo yum install docker-ce -y
 #sudo yum install docker-ce-17.12.0.ce
 
+mkdir /etc/docker
 cp ../etc/daemon.json /etc/docker
 
 # 启动
