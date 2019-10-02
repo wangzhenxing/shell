@@ -9,8 +9,9 @@ cd /usr/local/src/
 #wget https://codeload.github.com/vim/vim/tar.gz/v8.0.0134
 #tar zxf v8.0.0134
 wget https://ftp.nluug.nl/pub/vim/unix/vim-8.1.tar.bz2
-tar -jxvf vim-8.1.tar.bz2
-cd vim-8.1
+bzip2 -d vim-8.1.tar.bz2
+tar -xvf vim-8.1.tar
+cd vim81
 ./configure --with-features=huge -enable-pythoninterp=yes
 make && make install
 
@@ -23,3 +24,8 @@ echo "alias vi='/usr/local/bin/vim'" >> ~/.bashrc
 source ~/.bashrc
 
 #:PluginInstall
+
+#yum install gcc
+#yum install centos-release-scl -y
+#yum install devtoolset-6 -y
+#scl enable devtoolset-6 bash

@@ -29,3 +29,5 @@ yum install -y lsof
 yum install iotop -y
 
 yum install -y htop
+
+yum install -y bzip2
