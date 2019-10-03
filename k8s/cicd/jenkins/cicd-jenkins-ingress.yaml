@@ -7,7 +7,7 @@ metadata:
     kubernetes.io/ingress.class: "nginx"
 spec:
   rules:
-  - host: jenkins-k8s.cloudsky.com
+  - host: abigalelyy.com
     http:
       paths:
       - backend:
