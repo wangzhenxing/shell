@@ -39,6 +39,7 @@ ENV BUILD_DEPS libxml2 \
                libxslt-devel \
                autoconf
 
+ENV PHP_BIN /opt/apps/php/bin/php
 ENV PHP_LOCATION /opt/apps/php
 ENV BUILD_ARG   --prefix=${PHP_LOCATION} \
                 --with-config-file-path=${PHP_LOCATION}/etc \
@@ -185,7 +186,12 @@ ADD php.ini ${PHP_LOCATION}/etc/php.ini
 ADD php-fpm.conf ${PHP_LOCATION}/etc/php-fpm.conf
 ADD www.conf ${PHP_LOCATION}/etc/php-fpm.d/www.conf
 
+RUN ${PHP_BIN} -r "copy('https://install.phpcomposer.com/installer', 'composer-setup.php');" \
+    && ${PHP_BIN} composer-setup.php \
+    && mv composer.phar /usr/local/bin/composer \
+    && rm -rf composer-setup.php
+
 EXPOSE 9000
 
 #CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisord.conf"]
-CMD ["/opt/apps/php/sbin/php-fpm"]
+CMD ["/opt/apps/php/sbin/php-fpm", "-y", "/opt/apps/php/etc/php-fpm.conf"]
