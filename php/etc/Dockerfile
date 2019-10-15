@@ -1,4 +1,4 @@
-FROM registry.qtt6.cn/library/centos:7
+FROM centos:7
 
 # 定义软件版本，编译工具，依赖等变量
 ENV PHP_VERSION 7.1.12
@@ -36,7 +36,9 @@ ENV BUILD_DEPS libxml2 \
                libmcrypt-devel \
                libxslt \
                libxslt-devel \
-               autoconf
+               autoconf \ 
+               libc-client-devel \ 
+         
 
 ENV PHP_LOCATION /opt/apps/php
 ENV BUILD_ARG   --prefix=${PHP_LOCATION} \
@@ -117,8 +119,10 @@ ENV SRC_DIR /opt/soft/php
 WORKDIR ${SRC_DIR}
 
 # 开始编译安装php
-RUN cp -rf  /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+RUN rm -rf /etc/localtime \
+    && cp -rf  /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && useradd work \
+    #&& yum install -y libc-client-devel \
     && yum -y  install ${BUILD_TOOLS} \
     && wget -P /etc/yum.repos.d/ http://mirrors.aliyun.com/repo/epel-7.repo \
     && yum -y  install ${BUILD_DEPS} \
