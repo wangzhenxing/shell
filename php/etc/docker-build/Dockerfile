@@ -179,17 +179,21 @@ RUN rm -rf /etc/localtime \
     && yum clean all
 
 
-# 配置php-fpm
+## 配置php-fpm
 WORKDIR ${PHP_LOCATION}/etc/
 
 ADD php.ini ${PHP_LOCATION}/etc/php.ini
 ADD php-fpm.conf ${PHP_LOCATION}/etc/php-fpm.conf
 ADD www.conf ${PHP_LOCATION}/etc/php-fpm.d/www.conf
 
+## 安装composer
 RUN ${PHP_BIN} -r "copy('https://install.phpcomposer.com/installer', 'composer-setup.php');" \
     && ${PHP_BIN} composer-setup.php \
     && mv composer.phar /usr/local/bin/composer \
     && rm -rf composer-setup.php
+
+## 设置环境变量
+RUN echo "export PATH=$PATH:/opt/apps/php/bin:/opt/apps/php/sbin" >> ~/.bashrc
 
 EXPOSE 9000
 
