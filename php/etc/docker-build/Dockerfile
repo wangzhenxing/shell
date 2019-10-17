@@ -179,12 +179,10 @@ RUN rm -rf /etc/localtime \
     && yum clean all
 
 
-## 配置php-fpm
+## 配置php
 WORKDIR ${PHP_LOCATION}/etc/
 
 ADD php.ini ${PHP_LOCATION}/etc/php.ini
-ADD php-fpm.conf ${PHP_LOCATION}/etc/php-fpm.conf
-ADD www.conf ${PHP_LOCATION}/etc/php-fpm.d/www.conf
 
 ## 安装composer
 RUN ${PHP_BIN} -r "copy('https://install.phpcomposer.com/installer', 'composer-setup.php');" \
@@ -192,10 +190,11 @@ RUN ${PHP_BIN} -r "copy('https://install.phpcomposer.com/installer', 'composer-s
     && mv composer.phar /usr/local/bin/composer \
     && rm -rf composer-setup.php
 
+## 安装docker
+RUN  yum remove docker  docker-common docker-selinux docker-engine -y \
+	&& yum install -y yum-utils device-mapper-persistent-data lvm2 \
+	&& yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo \
+	&& yum install docker-ce -y
+
 ## 设置环境变量
-RUN echo "export PATH=$PATH:/opt/apps/php/bin:/opt/apps/php/sbin" >> ~/.bashrc
-
-EXPOSE 9000
-
-#CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisord.conf"]
-CMD ["/opt/apps/php/sbin/php-fpm", "-y", "/opt/apps/php/etc/php-fpm.conf"]
+ENV PATH $PATH:/opt/apps/php/bin:/opt/apps/php/sbin
