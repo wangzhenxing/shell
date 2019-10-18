@@ -173,10 +173,7 @@ RUN rm -rf /etc/localtime \
     && cd mongodb-1.6.0 \
     && ${PHP_LOCATION}/bin/phpize \
     && ./configure --with-php-config=${PHP_LOCATION}/bin/php-config \
-    && make && make install \
-
-    && rm -rf ${SRC_DIR} \
-    && yum clean all
+    && make && make install 
 
 
 ## 配置php-fpm
@@ -185,7 +182,7 @@ WORKDIR ${PHP_LOCATION}/etc/
 ADD php.ini ${PHP_LOCATION}/etc/php.ini
 ADD php-fpm.conf ${PHP_LOCATION}/etc/php-fpm.conf
 ADD www.conf ${PHP_LOCATION}/etc/php-fpm.d/www.conf
-RUN mkdir -p /data/logs/php
+RUN mkdir -p /data/logs/php /data/logs/app
 
 
 ## 安装composer
@@ -203,30 +200,34 @@ RUN  yum remove docker  docker-common docker-selinux docker-engine -y \
 
 
 ## 安装nginx
-RUN rpm -ivh http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm \
-	&& yum repolist -y\
-	&& yum install nginx -y \
-	&& mkdir -p /data/logs/nginx \ 
-    && rm -rf /etc/nginx/conf.d/default.conf
+RUN tar -xzvf openresty.tar.gz
+    && mv openresty /opt/apps/
+#RUN rpm -ivh http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm \
+#	&& yum repolist -y\
+#	&& yum install nginx -y \
+#	&& mkdir -p /data/logs/nginx \ 
+#    && rm -rf /etc/nginx/conf.d/default.conf
 
 ADD fpm.status.conf /etc/nginx/conf.d/fpm.status.conf
 ADD opcache_gui.conf /etc/nginx/conf.d/opcache_gui.conf
-ADD prometheus.lua /etc/nginx/prometheus.lua
-ADD prometheus_test.lua /etc/nginx/prometheus_test.lua
-ADD fastcgi.conf /etc/nginx/fastcgi.conf
-ADD nginx.conf /etc/nginx/nginx.conf
-ADD nginx-project.conf /etc/nginx/conf.d/nginx-project.conf
+
+
+## clear
+RUN rm -rf ${SRC_DIR} \
+    && yum clean all
 
 
 ## 设置环境变量
-ENV PATH $PATH:/opt/apps/php/bin:/opt/apps/php/sbin
+ENV PATH $PATH:/opt/apps/php/bin:/opt/apps/php/sbin:/opt/apps/openresty/nginx/sbin
 
 # php项目
 EXPOSE 8080
 # opcache gui
 EXPOSE 8084
+# php-fpm-exporter
+EXPOSE 8085
 # metrics
 EXPOSE 9145
 
 RUN echo "start php-fpm(9000), nginx(80, 8080, 8084)"
-ENTRYPOINT php-fpm -y /opt/apps/php/etc/php-fpm.conf && nginx -t && nginx -g "daemon off;"
+ENTRYPOINT php-fpm -y /opt/apps/php/etc/php-fpm.conf && nohup /opt/apps/php-fpm-exporter/php-fpm-exporter -addr 0.0.0.0:8085 -status-url http://127.0.0.1/status > /data/logs/app/php-fpm-exporter.log && nginx -t && nginx -g "daemon off;"
