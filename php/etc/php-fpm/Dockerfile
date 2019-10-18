@@ -209,15 +209,20 @@ RUN rpm -ivh http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos
 	&& mkdir -p /data/logs/nginx
 ADD fpm.status.conf /etc/nginx/conf.d/fpm.status.conf
 ADD opcache_gui.conf /etc/nginx/conf.d/opcache_gui.conf
-ADD nginx.conf /etc/nginx/nginx.conf
+ADD prometheus.lua /etc/nginx/prometheus.lua
+ADD prometheus_test.lua /etc/nginx/prometheus_test.lua
+ADD fastcgi.conf /etc/nginx/fastcgi.conf
 
 
 ## 设置环境变量
 ENV PATH $PATH:/opt/apps/php/bin:/opt/apps/php/sbin
 
+# php项目
 EXPOSE 8080
+# opcache gui
 EXPOSE 8084
-EXPOSE 80
+# metrics
+EXPOSE 9145
 
 RUN echo "start php-fpm(9000), nginx(80, 8080, 8084)"
 ENTRYPOINT php-fpm -y /opt/apps/php/etc/php-fpm.conf && nginx -t && nginx -g "daemon off;"
