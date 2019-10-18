@@ -206,12 +206,16 @@ RUN  yum remove docker  docker-common docker-selinux docker-engine -y \
 RUN rpm -ivh http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm \
 	&& yum repolist -y\
 	&& yum install nginx -y \
-	&& mkdir -p /data/logs/nginx
+	&& mkdir -p /data/logs/nginx \ 
+    && rm -rf /etc/nginx/conf.d/default.conf
+
 ADD fpm.status.conf /etc/nginx/conf.d/fpm.status.conf
 ADD opcache_gui.conf /etc/nginx/conf.d/opcache_gui.conf
 ADD prometheus.lua /etc/nginx/prometheus.lua
 ADD prometheus_test.lua /etc/nginx/prometheus_test.lua
 ADD fastcgi.conf /etc/nginx/fastcgi.conf
+ADD nginx.conf /etc/nginx/nginx.conf
+ADD nginx-project.conf /etc/nginx/conf.d/nginx-project.conf
 
 
 ## 设置环境变量
