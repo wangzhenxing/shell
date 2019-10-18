@@ -209,6 +209,7 @@ RUN rpm -ivh http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos
 	&& mkdir -p /data/logs/nginx
 ADD fpm.status.conf /etc/nginx/conf.d/fpm.status.conf
 ADD opcache_gui.conf /etc/nginx/conf.d/opcache_gui.conf
+ADD nginx.conf /etc/nginx/nginx.conf
 
 
 ## 设置环境变量
