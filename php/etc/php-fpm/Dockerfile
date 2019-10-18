@@ -200,7 +200,7 @@ RUN  yum remove docker  docker-common docker-selinux docker-engine -y \
 
 
 ## 安装nginx
-RUN tar -xzvf openresty.tar.gz
+RUN cd ${SRC_DIR} && tar -xzvf openresty.tar.gz \
     && mv openresty /opt/apps/
 #RUN rpm -ivh http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm \
 #	&& yum repolist -y\
