@@ -188,6 +188,13 @@ ADD www.conf ${PHP_LOCATION}/etc/php-fpm.d/www.conf
 RUN mkdir -p /data/logs/php
 
 
+## 安装composer
+RUN ${PHP_BIN} -r "copy('https://install.phpcomposer.com/installer', 'composer-setup.php');" \
+    && ${PHP_BIN} composer-setup.php \
+    && mv composer.phar /usr/local/bin/composer \
+    && rm -rf composer-setup.php
+
+
 ## 安装docker
 RUN  yum remove docker  docker-common docker-selinux docker-engine -y \
         && yum install -y yum-utils device-mapper-persistent-data lvm2 \
