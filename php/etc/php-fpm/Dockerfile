@@ -185,6 +185,7 @@ WORKDIR ${PHP_LOCATION}/etc/
 ADD php.ini ${PHP_LOCATION}/etc/php.ini
 ADD php-fpm.conf ${PHP_LOCATION}/etc/php-fpm.conf
 ADD www.conf ${PHP_LOCATION}/etc/php-fpm.d/www.conf
+RUN mkdir -p /data/logs/php
 
 
 ## 安装docker
@@ -197,7 +198,8 @@ RUN  yum remove docker  docker-common docker-selinux docker-engine -y \
 ## 安装nginx
 RUN rpm -ivh http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm \
 	&& yum repolist -y\
-	&& yum install nginx -y
+	&& yum install nginx -y \
+	&& mkdir -p /data/logs/nginx
 ADD fpm.status.conf /etc/nginx/conf.d/fpm.status.conf
 ADD opcache_gui.conf /etc/nginx/conf.d/opcache_gui.conf
 
@@ -209,7 +211,5 @@ EXPOSE 8080
 EXPOSE 8084
 EXPOSE 80
 
-ENTRYPOINT php-fpm -y /opt/apps/php/etc/php-fpm.conf
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
-
-
+RUN echo "start php-fpm(9000), nginx(80, 8080, 8084)"
+ENTRYPOINT php-fpm -y /opt/apps/php/etc/php-fpm.conf && nginx -t && nginx -g "daemon off;"
