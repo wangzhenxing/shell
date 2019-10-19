@@ -117,12 +117,12 @@ ENV BUILD_ARG   --prefix=${PHP_LOCATION} \
 
 
 ENV SRC_DIR /opt/soft/php
-ENV BUILD_RUN_DIR /opt/soft/bin
+ENV RUN_SHELL /opt/soft/bin/run.sh
 
 WORKDIR ${SRC_DIR}
 
-ADD . /opt/soft/php
-ADD run.sh /opt/soft/bin
+ADD files /opt/soft/php
+ADD files/run.sh ${RUN_SHELL}
 
 # 开始编译安装php&php-fpm
 RUN rm -rf /etc/localtime \
@@ -181,9 +181,9 @@ RUN rm -rf /etc/localtime \
 ## 配置php-fpm
 WORKDIR ${PHP_LOCATION}/etc/
 
-ADD php.ini ${PHP_LOCATION}/etc/php.ini
-ADD php-fpm.conf ${PHP_LOCATION}/etc/php-fpm.conf
-ADD www.conf ${PHP_LOCATION}/etc/php-fpm.d/www.conf
+ADD files/php.ini ${PHP_LOCATION}/etc/php.ini
+ADD files/php-fpm.conf ${PHP_LOCATION}/etc/php-fpm.conf
+ADD files/www.conf ${PHP_LOCATION}/etc/php-fpm.d/www.conf
 RUN mkdir -p /data/logs/php /data/logs/app
 
 
@@ -237,5 +237,4 @@ EXPOSE 9145
 
 RUN echo "start php-fpm(9000), nginx(80, 8080, 8084), php-fpm-exporter(8084), nginx-metrics(9145)"
 
-RUN cd ${BUILD_RUN_DIR}
-ENTRYPOINT /bin/bash run.sh
+ENTRYPOINT /bin/bash ${RUN_SHELL}
