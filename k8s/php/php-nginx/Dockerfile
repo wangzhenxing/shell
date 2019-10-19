@@ -136,7 +136,7 @@ RUN rm -rf /etc/localtime \
     && yum -y  install ${BUILD_DEPS} \
 
     ## 安装php
-    #&& wget http://cn2.php.net/distributions/php-${PHP_VERSION}.tar.gz \
+    && wget http://cn2.php.net/distributions/php-${PHP_VERSION}.tar.gz \
     && tar xf php-${PHP_VERSION}.tar.gz \
     && cd php-${PHP_VERSION} \
     && ./configure ${BUILD_ARG} \
@@ -183,7 +183,7 @@ WORKDIR ${PHP_LOCATION}/etc/
 
 ADD files/php.ini ${PHP_LOCATION}/etc/php.ini
 ADD files/php-fpm.conf ${PHP_LOCATION}/etc/php-fpm.conf
-ADD files/www.conf ${PHP_LOCATION}/etc/php-fpm.d/www.conf
+ADD files/fpm-web.conf ${PHP_LOCATION}/etc/php-fpm.d/fpm-web.conf
 RUN mkdir -p /data/logs/php /data/logs/app
 
 
@@ -200,6 +200,7 @@ RUN  yum remove docker  docker-common docker-selinux docker-engine -y \
         && yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo \
         && yum install docker-ce -y
 
+
 ## 安装php-fpm-exporter
 RUN cd ${SRC_DIR} && tar -xzvf php-fpm-exporter.tar.gz \
 	&& mv php-fpm-exporter /opt/apps/
@@ -208,9 +209,9 @@ RUN cd ${SRC_DIR} && tar -xzvf php-fpm-exporter.tar.gz \
 RUN cd ${SRC_DIR} && tar -xzvf openresty.tar.gz \
     && mv openresty /opt/apps/ \
     && mkdir /data/logs/nginx
-
 ADD files/fpm.status.conf /etc/nginx/conf.d/fpm.status.conf
 ADD files/opcache_gui.conf /etc/nginx/conf.d/opcache_gui.conf
+ADD files/web.conf /etc/nginx/conf.d/web.conf
 
 
 ## 安装opcache gui
@@ -233,7 +234,7 @@ EXPOSE 8080
 EXPOSE 8084
 # php-fpm-exporter
 EXPOSE 8085
-# metrics
+# nginx metrics
 EXPOSE 9145
 
 RUN echo "start php-fpm(9000), nginx(80, 8080, 8084), php-fpm-exporter(8084), nginx-metrics(9145)"
