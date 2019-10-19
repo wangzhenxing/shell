@@ -1,2 +1,0 @@
-# 阿里源
-https://mirrors.aliyun.com/composer/

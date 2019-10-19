@@ -117,10 +117,12 @@ ENV BUILD_ARG   --prefix=${PHP_LOCATION} \
 
 
 ENV SRC_DIR /opt/soft/php
+ENV RUN_SHELL /opt/soft/bin/run.sh
 
 WORKDIR ${SRC_DIR}
 
-ADD . /opt/soft/php
+ADD files /opt/soft/php
+ADD files/run.sh ${RUN_SHELL}
 
 # 开始编译安装php&php-fpm
 RUN rm -rf /etc/localtime \
@@ -173,19 +175,16 @@ RUN rm -rf /etc/localtime \
     && cd mongodb-1.6.0 \
     && ${PHP_LOCATION}/bin/phpize \
     && ./configure --with-php-config=${PHP_LOCATION}/bin/php-config \
-    && make && make install \
-
-    && rm -rf ${SRC_DIR} \
-    && yum clean all
+    && make && make install 
 
 
 ## 配置php-fpm
 WORKDIR ${PHP_LOCATION}/etc/
 
-ADD php.ini ${PHP_LOCATION}/etc/php.ini
-ADD php-fpm.conf ${PHP_LOCATION}/etc/php-fpm.conf
-ADD www.conf ${PHP_LOCATION}/etc/php-fpm.d/www.conf
-RUN mkdir -p /data/logs/php
+ADD files/php.ini ${PHP_LOCATION}/etc/php.ini
+ADD files/php-fpm.conf ${PHP_LOCATION}/etc/php-fpm.conf
+ADD files/www.conf ${PHP_LOCATION}/etc/php-fpm.d/www.conf
+RUN mkdir -p /data/logs/php /data/logs/app
 
 
 ## 安装composer
@@ -201,23 +200,42 @@ RUN  yum remove docker  docker-common docker-selinux docker-engine -y \
         && yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo \
         && yum install docker-ce -y
 
+## 安装php-fpm-exporter
+RUN cd ${SRC_DIR} && tar -xzvf php-fpm-exporter.tar.gz \
+	&& mv php-fpm-exporter /opt/apps/
 
 ## 安装nginx
-RUN rpm -ivh http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm \
-	&& yum repolist -y\
-	&& yum install nginx -y \
-	&& mkdir -p /data/logs/nginx
+RUN cd ${SRC_DIR} && tar -xzvf openresty.tar.gz \
+    && mv openresty /opt/apps/ \
+    && mkdir /data/logs/nginx
+
 ADD fpm.status.conf /etc/nginx/conf.d/fpm.status.conf
 ADD opcache_gui.conf /etc/nginx/conf.d/opcache_gui.conf
-ADD nginx.conf /etc/nginx/nginx.conf
+
+
+## 安装opcache gui
+RUN cd ${SRC_DIR} && tar -xzvf opcache-gui.tar.gz  \
+	&& mkdir -p /data/web \
+	&& mv opcache-gui /data/web
+
+
+## clear
+RUN rm -rf ${SRC_DIR} \
+    && yum clean all
 
 
 ## 设置环境变量
-ENV PATH $PATH:/opt/apps/php/bin:/opt/apps/php/sbin
+ENV PATH $PATH:/opt/apps/php/bin:/opt/apps/php/sbin:/opt/apps/openresty/nginx/sbin
 
+# php项目
 EXPOSE 8080
+# opcache gui
 EXPOSE 8084
-EXPOSE 80
+# php-fpm-exporter
+EXPOSE 8085
+# metrics
+EXPOSE 9145
 
-RUN echo "start php-fpm(9000), nginx(80, 8080, 8084)"
-ENTRYPOINT php-fpm -y /opt/apps/php/etc/php-fpm.conf && nginx -t && nginx -g "daemon off;"
+RUN echo "start php-fpm(9000), nginx(80, 8080, 8084), php-fpm-exporter(8084), nginx-metrics(9145)"
+
+ENTRYPOINT /bin/bash ${RUN_SHELL}

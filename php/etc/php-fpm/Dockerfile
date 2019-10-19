@@ -208,14 +208,15 @@ RUN cd ${SRC_DIR} && tar -xzvf php-fpm-exporter.tar.gz \
 RUN cd ${SRC_DIR} && tar -xzvf openresty.tar.gz \
     && mv openresty /opt/apps/ \
     && mkdir /data/logs/nginx
-#RUN rpm -ivh http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm \
-#	&& yum repolist -y\
-#	&& yum install nginx -y \
-#	&& mkdir -p /data/logs/nginx \ 
-#    && rm -rf /etc/nginx/conf.d/default.conf
 
-ADD fpm.status.conf /etc/nginx/conf.d/fpm.status.conf
-ADD opcache_gui.conf /etc/nginx/conf.d/opcache_gui.conf
+ADD files/fpm.status.conf /etc/nginx/conf.d/fpm.status.conf
+ADD files/opcache_gui.conf /etc/nginx/conf.d/opcache_gui.conf
+
+
+## 安装opcache gui
+RUN cd ${SRC_DIR} && tar -xzvf opcache-gui.tar.gz  \
+	&& mkdir -p /data/web \
+	&& mv opcache-gui /data/web
 
 
 ## clear
