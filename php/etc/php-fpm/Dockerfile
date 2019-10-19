@@ -117,10 +117,12 @@ ENV BUILD_ARG   --prefix=${PHP_LOCATION} \
 
 
 ENV SRC_DIR /opt/soft/php
+ENV BUILD_RUN_DIR /opt/soft/bin
 
 WORKDIR ${SRC_DIR}
 
 ADD . /opt/soft/php
+ADD run.sh /opt/soft/bin
 
 # 开始编译安装php&php-fpm
 RUN rm -rf /etc/localtime \
@@ -200,8 +202,7 @@ RUN  yum remove docker  docker-common docker-selinux docker-engine -y \
 
 ## 安装php-fpm-exporter
 RUN cd ${SRC_DIR} && tar -xzvf php-fpm-exporter.tar.gz \
-	&& mv php-fpm-exporter /opt/apps/ \
-    && mkdir /data/logs/app
+	&& mv php-fpm-exporter /opt/apps/
 
 ## 安装nginx
 RUN cd ${SRC_DIR} && tar -xzvf openresty.tar.gz \
@@ -235,5 +236,6 @@ EXPOSE 8085
 EXPOSE 9145
 
 RUN echo "start php-fpm(9000), nginx(80, 8080, 8084), php-fpm-exporter(8084), nginx-metrics(9145)"
-ENTRYPOINT php-fpm -y /opt/apps/php/etc/php-fpm.conf && nohup /opt/apps/php-fpm-exporter/php-fpm-exporter -addr 0.0.0.0:8085 -status-url http://127.0.0.1/status > /data/logs/app/php-fpm-exporter.log && nginx -t && nginx -g "daemon off;"
-#ENTRYPOINT  /opt/apps/openresty/nginx/sbin/nginx -t && /opt/apps/openresty/nginx/sbin/nginx -c  /opt/apps/openresty/nginx/conf/nginx.conf && php-fpm -y /opt/apps/php/etc/php-fpm.conf -F
+
+RUN cd ${BUILD_RUN_DIR}
+ENTRYPOINT /bin/bash run.sh
