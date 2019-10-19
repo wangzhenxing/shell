@@ -209,8 +209,8 @@ RUN cd ${SRC_DIR} && tar -xzvf openresty.tar.gz \
     && mv openresty /opt/apps/ \
     && mkdir /data/logs/nginx
 
-ADD fpm.status.conf /etc/nginx/conf.d/fpm.status.conf
-ADD opcache_gui.conf /etc/nginx/conf.d/opcache_gui.conf
+ADD files/fpm.status.conf /etc/nginx/conf.d/fpm.status.conf
+ADD files/opcache_gui.conf /etc/nginx/conf.d/opcache_gui.conf
 
 
 ## 安装opcache gui
