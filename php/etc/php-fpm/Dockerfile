@@ -200,7 +200,8 @@ RUN  yum remove docker  docker-common docker-selinux docker-engine -y \
 
 ## 安装php-fpm-exporter
 RUN cd ${SRC_DIR} && tar -xzvf php-fpm-exporter.tar.gz \
-	&& mv php-fpm-exporter /opt/apps/
+	&& mv php-fpm-exporter /opt/apps/ \
+    && mkdir /data/logs/app
 
 ## 安装nginx
 RUN cd ${SRC_DIR} && tar -xzvf openresty.tar.gz \
