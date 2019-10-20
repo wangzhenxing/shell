@@ -41,6 +41,7 @@ ENV BUILD_DEPS libxml2 \
 
 ENV PHP_BIN /opt/apps/php/bin/php
 ENV PHP_LOCATION /opt/apps/php
+ENV NGINX_LOCATION /opt/apps/openresty/nginx
 ENV BUILD_ARG   --prefix=${PHP_LOCATION} \
                 --with-config-file-path=${PHP_LOCATION}/etc \
                 --enable-fpm \
@@ -209,9 +210,7 @@ RUN cd ${SRC_DIR} && tar -xzvf php-fpm-exporter.tar.gz \
 RUN cd ${SRC_DIR} && tar -xzvf openresty.tar.gz \
     && mv openresty /opt/apps/ \
     && mkdir /data/logs/nginx
-ADD files/fpm.status.conf /etc/nginx/conf.d/fpm.status.conf
-ADD files/opcache_gui.conf /etc/nginx/conf.d/opcache_gui.conf
-ADD files/web.conf /etc/nginx/conf.d/web.conf
+ADD files/web.conf ${NGINX_LOCATION}/conf/vhost/web.conf
 
 
 ## 安装opcache gui
