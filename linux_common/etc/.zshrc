@@ -117,6 +117,8 @@ alias gca='git commit -am '
 alias gc='git commit -m '
 alias gm='git merge '
 alias gd='git diff'
+alias gco='git checkout'
+alias g='git '
 
 export PATH=$PATH:/Users/wzx/thirdparty/etcd/etcd-v3.3.8-darwin-amd64:/Users/wzx/go/bin:/Users/wzx/thirdparty/bin
 export GOPATH=/Users/wzx/go
