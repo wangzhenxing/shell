@@ -1,0 +1,3 @@
+- targets: [ "go-project-content-import-prd.abigalelyy.com" ]
+  labels:
+    group: "business_group"

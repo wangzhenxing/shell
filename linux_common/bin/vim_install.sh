@@ -18,6 +18,7 @@ make && make install
 cd ${CUR_DIR}
 cp ../etc/vimrc ~/.vimrc
 
+rm -rf ~/.vim/bundle/Vundle.vim
 git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 
 echo "alias vi='/usr/local/bin/vim'" >> ~/.bashrc
