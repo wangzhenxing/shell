@@ -1,3 +1,6 @@
+- targets: [ "39.105.157.120:8981" ]
+  labels:
+    group: "business_group"
 - targets: [ "go-project-content-import-prd.abigalelyy.com" ]
   labels:
     group: "business_group"
