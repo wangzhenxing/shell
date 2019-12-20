@@ -1,0 +1,139 @@
+version: '3.3'
+
+services:
+
+  # prometheus3
+  prometheus3:
+    image: prom/prometheus
+    labels:
+    - "name:prometheus3"
+    command:
+    - --web.enable-lifecycle
+    - --config.file=/etc/prometheus/prometheus.yml
+    - --storage.tsdb.path=/prometheus
+    - --web.console.libraries=/usr/share/prometheus/console_libraries
+    - --web.console.templates=/usr/share/prometheus/consoles
+    - --storage.tsdb.min-block-duration=1d
+    - --storage.tsdb.max-block-duration=1d
+    volumes:
+    - /etc/prometheus3/prometheus.yml:/etc/prometheus/prometheus.yml
+    - /etc/prometheus3/rules:/etc/prometheus/rules
+    - /etc/prometheus3/business_sd_config.yml:/etc/prometheus/business_sd_config.yml
+    - /data/prometheus3:/prometheus
+    ports: 
+    - "9390:9090"
+  sidecar3:
+    image: thanosio/thanos:v0.9.0
+    volumes:
+    - /data/prometheus3:/var/prometheus
+    command:
+    - sidecar
+    - --tsdb.path=/var/prometheus
+    - --prometheus.url=http://prometheus3:9090
+    - --http-address=0.0.0.0:19191
+    - --grpc-address=0.0.0.0:19090
+    labels:
+    - "name:sidecar3"
+
+  # prometheus4
+  prometheus4:
+    image: prom/prometheus
+    labels:
+    - "name:prometheus4"
+    command:
+    - --web.enable-lifecycle
+    - --config.file=/etc/prometheus/prometheus.yml
+    - --storage.tsdb.path=/prometheus
+    - --web.console.libraries=/usr/share/prometheus/console_libraries
+    - --web.console.templates=/usr/share/prometheus/consoles
+    - --storage.tsdb.min-block-duration=2h
+    - --storage.tsdb.max-block-duration=2h
+    - --storage.tsdb.retention.time=15d
+    volumes:
+    - /etc/prometheus4/prometheus.yml:/etc/prometheus/prometheus.yml
+    - /etc/prometheus4/rules:/etc/prometheus/rules
+    - /etc/prometheus4/business_sd_config.yml:/etc/prometheus/business_sd_config.yml
+    - /data/prometheus4:/prometheus
+    ports: 
+    - "9490:9090"
+  sidecar4:
+    image: thanosio/thanos:v0.9.0
+    volumes:
+    - /data/prometheus4:/var/prometheus
+    command:
+    - sidecar
+    - --tsdb.path=/var/prometheus
+    - --prometheus.url=http://prometheus4:9090
+    - --http-address=0.0.0.0:19191
+    - --grpc-address=0.0.0.0:19090
+    labels:
+    - "name:sidecar4"
+
+  # grafana
+  grafana:
+    image: grafana/grafana
+    ports:
+    - "3001:3000"
+    volumes:
+    - /data/ops/grafana-storage-1:/var/lib/grafana
+
+  # alertmanager
+  alertmanager:
+    image: prom/alertmanager
+    ports:
+    - "9093:9093"
+    volumes:
+    - /etc/prometheus/template:/etc/prometheus/template
+    - /etc/prometheus/alert_manager.yml:/etc/prometheus/alertmanager.yml
+
+  # node exporter 
+  node_exporter:
+    image: prom/node-exporter
+    ports:
+    - "9100:9100"
+    volumes:
+    - /proc:/host/proc:ro
+    - /sys:/host/sys:ro
+    - /:/rootfs:ro
+
+
+  # to search on old metrics
+  #storer:
+  #  image: thanosio/thanos:v0.9.0
+  #  volumes:
+  #  - ./bucket_config.yaml:/bucket_config.yaml
+  #  command:
+  #  - store
+  #  - --data-dir=/var/thanos/store
+  #  - --objstore.config-file=bucket_config.yaml
+  #  - --http-address=0.0.0.0:19191
+  #  - --grpc-address=0.0.0.0:19090
+  #
+  # downsample metrics on the bucket
+  #compactor:
+  #  image: thanosio/thanos:v0.4.0
+  #  volumes:
+  #  - ./bucket_config.yaml:/bucket_config.yaml
+  #  command:
+  #  - compact
+  #  - --data-dir=/var/thanos/compact
+  #  - --objstore.config-file=bucket_config.yaml
+  #  - --http-address=0.0.0.0:19191
+  #  - --wait
+  
+  # querier component which can be scaled
+  querier:
+    image: thanosio/thanos:v0.9.0
+    ports:
+    - "19192:19192"
+    command:
+    - query
+    - --http-address=0.0.0.0:19192
+    - --store=sidecar3:19090
+    - --store=sidecar4:19090
+ #  - --store=storer:19090
+    - --query.replica-label=replica
+
+networks:
+  default:
+    driver: bridge

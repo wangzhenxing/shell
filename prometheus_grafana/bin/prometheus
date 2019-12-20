@@ -1,0 +1,76 @@
+#!/bin/bash
+
+set -e -x
+
+HELP='run ./prometheus [start|restart|stop|delete]'
+
+showHelp() {
+    echo ''
+    echo ${HELP}
+    echo ''
+    exit
+}
+
+if [[ $# == 0  ]]
+then
+    showHelp
+fi
+
+
+###########################函数###############################
+
+# 开始
+_start() {
+    # prometheus不同实例版本号后缀
+    promVersions=(3 4)
+
+    for promVersion in ${promVersions[@]}
+    do
+        localConfPath=/etc/prometheus${promVersion}
+        rm -rf ${localConfPath}
+        mkdir -p ${localConfPath}
+        sed 's/{VERSION}/version${promVersion}/' ../etc/prometheus.yml > ${localConfPath}/prometheus.yml
+        cp ../etc/business_sd_config.yml ${localConfPath}
+        cp ../etc/rules ${localConfPath} -r
+    done
+
+    cd ../etc
+    /usr/local/bin/docker-compose up -d
+    exit
+}
+
+# 停止
+_stop() {
+    cd ../etc
+    /usr/local/bin/docker-compose stop
+    exit
+}
+
+# 重启
+_restart() {
+    cd ../etc
+    /usr/local/bin/docker-compose restart
+    exit
+}
+
+# 删除容器
+_delete() {
+    cd ../etc
+    /usr/local/bin/docker-compose down
+    exit
+}
+
+
+###########################主逻辑###############################
+
+cmds=(start restart stop delete)
+userCmd="$1"
+for cmd in ${cmds[@]}
+do
+    if [ "${cmd}" ==  "${userCmd}" ]
+    then
+        _${cmd}
+    fi
+done
+
+showHelp
