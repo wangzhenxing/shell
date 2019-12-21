@@ -1,4 +1,5 @@
 #!/bin/bash
+# 通过docker-compose安装prometheus+grafana+thanos (query + storer除外)
 
 set -e -x
 
