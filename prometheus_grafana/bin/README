@@ -1,2 +1,2 @@
-- prometheus: 通过docker-compose安装prometheus+grafana+thanos
-- *.sh脚本分别单独安装组件
+1、 prometheus: 通过docker-compose安装prometheus+grafana+thanos
+2、 *.sh脚本分别单独安装组件
