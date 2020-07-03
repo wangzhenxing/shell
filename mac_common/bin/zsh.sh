@@ -27,7 +27,7 @@ brew install zsh-autosuggestions
 git clone https://github.com/powerline/fonts.git
 cd fonts
 ./install.sh
-# 之后修改text字体
+# 之后修改text字体 为：  Meslo LG S DZ Regular for Powerline
 
 
 # 快捷键
